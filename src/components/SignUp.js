@@ -1,13 +1,22 @@
 import React,{useState} from 'react'
-
+import {auth} from '../firebase'
+import M from 'materialize-css'
+import {useHistory} from 'react-router-dom'
 export default function SignUp() {
+    
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const history =  useHistory()
 
-
-    const submithandle= (e) => {
+    const submithandle = async (e) => {
         e.preventDefault()
-        console.log(e)
+        try{
+            const response = await auth.createUserWithEmailAndPassword(email, password);
+            M.toast({html:`Welcome ${response.user.email}`, classes:'green'})
+            history.push('/')
+        }catch(err){
+            M.toast({html:err.message, classes:'red'})
+        }
     }
 
     return (
